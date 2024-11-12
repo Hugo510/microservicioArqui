@@ -19,7 +19,7 @@ Esta API permite gestionar productos en una aplicación de e-commerce. Construid
 - **Documentación**: Swagger
 - **Seguridad**: Helmet, CORS
 - **Logs**: Morgan
-- **Base de Datos**: [Especificar si aplica]
+- **Base de Datos**: ecommerce (sql)
 - **Contenedores**: Docker, Docker Compose
 
 ## Instalación
