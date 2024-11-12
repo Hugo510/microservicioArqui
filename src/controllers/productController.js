@@ -1,9 +1,19 @@
 // src/controllers/productController.js
 const ProductModel = require('../models/productModel');
+const path = require('path');
 
 exports.createProduct = async (req, res) => {
-    const id = await ProductModel.create(req.body);
-    res.status(201).json({ id, ...req.body });
+    const productData = req.body;
+
+    // Manejar la imagen
+    if (req.file) {
+        productData.image_url = `/uploads/${req.file.filename}`;
+    } else {
+        productData.image_url = null; // O establece un valor por defecto
+    }
+
+    const id = await ProductModel.create(productData);
+    res.status(201).json({ id, ...productData });
 };
 
 exports.getAllProducts = async (req, res) => {
@@ -20,11 +30,18 @@ exports.getProductById = async (req, res) => {
 };
 
 exports.updateProduct = async (req, res) => {
-    const affectedRows = await ProductModel.update(req.params.id, req.body);
+    const productData = req.body;
+
+    // Manejar la imagen
+    if (req.file) {
+        productData.image_url = `/uploads/${req.file.filename}`;
+    }
+
+    const affectedRows = await ProductModel.update(req.params.id, productData);
     if (affectedRows === 0) {
         return res.status(404).json({ message: 'Producto no encontrado' });
     }
-    res.json({ id: req.params.id, ...req.body });
+    res.json({ id: req.params.id, ...productData });
 };
 
 exports.deleteProduct = async (req, res) => {

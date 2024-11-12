@@ -5,6 +5,7 @@ const productController = require('../controllers/productController');
 const { productSchema, idSchema } = require('../validators/productValidator');
 const validate = require('../middleware/validate');
 const asyncHandler = require('../middleware/asyncHandler');
+const upload = require('../config/multer');
 
 // Middleware para validar el 'id' en los parámetros de la ruta
 const validateId = (req, res, next) => {
@@ -23,40 +24,78 @@ const validateId = (req, res, next) => {
  * /products:
  *   post:
  *     summary: Crear un nuevo producto
+ *     consumes:
+ *       - multipart/form-data
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/Product'
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Nombre del producto
+ *               price:
+ *                 type: number
+ *                 description: Precio del producto
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Imagen del producto
  *     responses:
  *       201:
  *         description: Producto creado exitosamente
+ *       400:
+ *         description: Solicitud inválida
+ *       500:
+ *         description: Error del servidor
+ * 
  */
-router.post('/', validate(productSchema), asyncHandler(productController.createProduct));
+router.post('/', upload.single('image'), validate(productSchema), asyncHandler(productController.createProduct));
 
 /**
  * @swagger
- * /products/{id}:
+  * /products/{id}:
  *   put:
  *     summary: Actualizar un producto existente
+ *     consumes:
+ *       - multipart/form-data
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
+ *         description: ID del producto a actualizar
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/Product'
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Nombre del producto
+ *               price:
+ *                 type: number
+ *                 description: Precio del producto
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Nueva imagen del producto
  *     responses:
  *       200:
  *         description: Producto actualizado exitosamente
+ *       400:
+ *         description: Solicitud inválida
+ *       404:
+ *         description: Producto no encontrado
+ *       500:
+ *         description: Error del servidor
  */
-router.put('/:id', validateId, validate(productSchema), asyncHandler(productController.updateProduct));
+router.put('/:id', validateId, upload.single('image'), validate(productSchema), asyncHandler(productController.updateProduct));
 
 /**
  * @swagger

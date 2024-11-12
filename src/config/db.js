@@ -18,7 +18,7 @@ pool.getConnection()
         connection.release();
     })
     .catch((err) => {
-        console.error('Error al conectar a la base de datos:', err);
+        console.log('Error al conectar a la base de datos:', err);
     });
 
 module.exports = pool;

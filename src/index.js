@@ -37,14 +37,11 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 // Rutas
 app.use('/products', productRoutes);
 
+// Servir archivos estáticos desde la carpeta 'uploads'
+app.use('/uploads', express.static('uploads'));
+
 // Middleware de manejo de errores (después de las rutas)
 app.use(errorHandler);
-
-// Iniciar el servidor
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Servidor ejecutándose en el puerto ${PORT}`);
-});
 
 // Probar la conexión a la base de datos antes de iniciar el servidor
 db.getConnection()
